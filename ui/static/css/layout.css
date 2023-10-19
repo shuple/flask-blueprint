@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+@charset "UTF-8";
+
+/* Global settings */
+body, html {
+  /* Layout and Positioning */
+  height: 100%;
+  width: 100%;
+
+  /* Box model */
+  margin: 0;
+  padding: 0;
+
+  /* Visual styling */
+  font-family: Meiryo, sans-serif, Arial;
+  font-size: 14px;
+}
