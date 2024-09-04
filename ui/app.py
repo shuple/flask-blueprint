@@ -28,22 +28,25 @@ app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=31)
 session = flask_session.Session()
 session.init_app(app)
 
-@app.before_request
+# Create a blueprint with 'bp' as the prefix
+app_bp = flask.Blueprint('bp', __name__,static_folder='static', url_prefix='/bp')
+
+@app_bp.before_request
 def initialize():
     """ This function runs before each request """
     pass
 
-@app.route('/', methods=['GET'])
+@app_bp.route('/', methods=['GET'])
 def root():
     """ Redirect to the index page """
     return flask.redirect('/index')
 
-@app.route('/index', methods=['GET'])
+@app_bp.route('/index', methods=['GET'])
 def index():
     """ Render the index page """
     return default_template()
 
-@app.route('/get/read', methods=['GET'])
+@app_bp.route('/get/read', methods=['GET'])
 def get_read():
     """
     Handles a GET request to '/get/read'.
@@ -55,7 +58,7 @@ def get_read():
     """
     return api(dict(flask.request.args))
 
-@app.route('/post/read', methods=['POST'])
+@app_bp.route('/post/read', methods=['POST'])
 def post_read():
     """
     Handles a POST request to '/post/read'.
@@ -66,6 +69,9 @@ def post_read():
         dict: The response from the api().
     """
     return api(rest=flask.request.json)
+
+# register Blueprint
+app.register_blueprint(app_bp)
 
 def api(rest):
     """
@@ -94,6 +100,7 @@ def htm():
 def template():
     """  Returns str: The URL path before any query parameters """
     url = re.sub(r'/$', '', flask.request.path)
+    url = '/'.join(url.split('/')[2:])
     return '/'.join(url.split('?')[0].split('/')[0:])
 
 def default_template(data={}):
